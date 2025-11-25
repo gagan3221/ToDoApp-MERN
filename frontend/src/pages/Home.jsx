@@ -1,53 +1,48 @@
-import React, { useEffect } from 'react';
-import { useContext } from 'react';
-import Input from '../components/Input';
-import Todos from '../components/Todos';
-import AuthContext from '../context/AuthContext';
-import TodosContext from '../context/TodosContext';
+import React, { useEffect } from "react";
+import { useContext } from "react";
+import Input from "../components/Input";
+import Todos from "../components/Todos";
+import AuthContext from "../context/AuthContext";
+import TodosContext from "../context/TodosContext";
 
 function Home() {
+  const { todos, dispatch } = useContext(TodosContext);
+  const { dispatch: Authdispatch, user } = useContext(AuthContext);
 
-    const {todos, dispatch} = useContext(TodosContext);
-    const { dispatch: Authdispatch, user } = useContext(AuthContext);
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const response = await fetch("http://localhost:5000/api/todos", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      const json = await response.json();
 
-    useEffect(() => {
+      dispatch({ type: "FETCH_TODOS", payload: json });
+    };
 
-        const fetchTodos = async () => {
-            const response = await fetch("https://mern-appl-wyiu.onrender.com/api/todos", {
-                headers: {
-                    "Authorization": `Bearer ${user.token}`
-                }
-            });
-            const json = await response.json();
+    fetchTodos();
+  }, [dispatch]);
 
-            dispatch({type: "FETCH_TODOS", payload: json});
-        }
+  const handleClick = () => {
+    localStorage.removeItem("user");
+    Authdispatch({ type: "LOGOUT" });
+    dispatch({ type: "FETCH_TODOS" });
+  };
 
-        fetchTodos();
-        
-    }, [dispatch]);
-
-    const handleClick = () => {
-        localStorage.removeItem("user");
-        Authdispatch({type: "LOGOUT"});
-        dispatch({type: "FETCH_TODOS"})
-    }
-
-    return (
-        <div className='home'>
-            <div>
-                <p>Welcome, <span>{ user.userName }</span>.</p>
-                <button onClick={handleClick}>Logout</button>
-            </div>
-            <h2>Todo app</h2>
-            <Input />
-            {
-                todos && todos.map(todo => (
-                    <Todos key={todo._id} todo={todo} />
-                ))
-            }
-        </div>
-    );
+  return (
+    <div className="home">
+      <div>
+        <p>
+          Welcome, <span>{user.userName}</span>.
+        </p>
+        <button onClick={handleClick}>Logout</button>
+      </div>
+      <h2>Todo app</h2>
+      <Input />
+      {todos && todos.map((todo) => <Todos key={todo._id} todo={todo} />)}
+    </div>
+  );
 }
 
 export default Home;
