@@ -36,15 +36,15 @@ function Input() {
   };
 
   return (
-    <form className="input" onSubmit={handleSubmit}>
+    <form className="input-form" onSubmit={handleSubmit}>
       <input
         ref={input}
         type="text"
-        placeholder="Enter a task..."
+        placeholder="Enter task name..."
         value={todo}
         onChange={(e) => setTodo(e.target.value)}
       />
-      <button>Go</button>
+      <button type="submit">Add Task</button>
     </form>
   );
 }

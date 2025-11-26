@@ -5,6 +5,7 @@ const {
   deleteTodo,
   updateTodo,
   getTodo,
+  updateTodoStatus,
 } = require("../controllers/todoController");
 
 const requireAuth = require("../middleware/requireAuth");
@@ -19,9 +20,12 @@ router.use(requireAuth);
 
 router.get("/", getTodos);
 
-router.get("/:id", getTodo);
-
 router.post("/", createTodo);
+
+// Status route must come before /:id routes
+router.patch("/:id/status", updateTodoStatus);
+
+router.get("/:id", getTodo);
 
 router.delete("/:id", deleteTodo);
 
