@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import Input from "../components/Input";
 import Todos from "../components/Todos";
+import AddTaskModal from "../components/AddTaskModal";
 import AuthContext from "../context/AuthContext";
 import TodosContext from "../context/TodosContext";
 
 function Home() {
   const { todos, dispatch } = useContext(TodosContext);
   const { dispatch: Authdispatch, user } = useContext(AuthContext);
-  const [showInput, setShowInput] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -36,7 +36,7 @@ function Home() {
       <div className="header">
         <h1 className="app-title">TASKIFY</h1>
         <div className="header-right">
-          <button className="btn-add-task" onClick={() => setShowInput(!showInput)}>
+          <button className="btn-add-task" onClick={() => setShowModal(true)}>
             Add Task +
           </button>
           <span className="user-name">👤 {user.userName}</span>
@@ -45,12 +45,6 @@ function Home() {
           </button>
         </div>
       </div>
-
-      {showInput && (
-        <div className="input-container">
-          <Input />
-        </div>
-      )}
 
       <div className="table-container">
         <h2 className="table-title">My Todo Activities</h2>
@@ -76,6 +70,8 @@ function Home() {
           </div>
         )}
       </div>
+
+      {showModal && <AddTaskModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }
